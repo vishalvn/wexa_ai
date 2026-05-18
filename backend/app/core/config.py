@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
@@ -9,8 +10,13 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     FRONTEND_URL: str = "http://localhost:3000"
 
-    # Database
-    DATABASE_URL: str = "postgresql+asyncpg://analytics:analytics123@localhost:5432/analytics"
+    # Database — reads DATABASE_URL from the environment (set automatically by
+    # the Railway Postgres service).  Falls back to a localhost default so local
+    # development works without extra configuration.
+    DATABASE_URL: str = Field(
+        default="postgresql+asyncpg://analytics:analytics123@localhost:5432/analytics",
+        validation_alias="DATABASE_URL",
+    )
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
